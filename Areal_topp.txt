@@ -1,0 +1,34 @@
+import cv2
+
+def count_black_pixels_and_area(image_path, height_mm, width_mm):
+    # Load the image in grayscale
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+
+    # Apply thresholding to convert the image to black and white
+    threshold_value = 225
+    _, thresh = cv2.threshold(img, threshold_value, 255, cv2.THRESH_BINARY)
+    cv2.imwrite('image_thresh.jpg',thresh)
+
+    # Count the number of black pixels
+    num_black_pixels = cv2.countNonZero(thresh)
+
+    # Calculate the area of black pixels in millimeters
+    height, width = img.shape[:2]
+    pixel_area = (height * width)
+    image_area = height_mm * width_mm
+    pixel_size = image_area / pixel_area
+
+    # Count the number of black pixels
+    num_black_pixels = pixel_area - cv2.countNonZero(thresh)
+    area_of_black_pixels_mm = num_black_pixels * pixel_size
+
+    return num_black_pixels, area_of_black_pixels_mm
+
+image_path = 'ROV_hiv.png'
+height_mm = 640  # height of image in millimeters
+width_mm = 606  # width of image in millimeters
+
+num_black_pixels, area_of_black_pixels_mm = count_black_pixels_and_area(image_path, height_mm, width_mm)
+
+print(f"Number of black pixels: {num_black_pixels}")
+print(f"Area of black pixels: {area_of_black_pixels_mm:.2f} mm²")
